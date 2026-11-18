@@ -1,0 +1,1161 @@
+/* NAVIGATION MAP - search SECTION followed by an ID below.
+ * GLOBALS-01 Browser defaults
+ * GLOBALS-02 Main layout
+ * GLOBALS-03 Summary cards
+ * GLOBALS-04 Progress banner
+ * GLOBALS-05 Task workspace
+ * GLOBALS-06 Task rows
+ * GLOBALS-07 Pagination
+ * GLOBALS-08 Empty states
+ * GLOBALS-09 Task forms
+ * GLOBALS-10 Import preview
+ * GLOBALS-11 Calendar
+ * GLOBALS-12 Large desktop layout
+ * GLOBALS-13 Small desktop layout
+ * GLOBALS-14 Phone layout
+ * GLOBALS-15 Reduced motion
+ * GLOBALS-16 Navigation menu
+ * GLOBALS-17 Daily plan cards
+ */
+
+/* Shared screen styles. Class names connect these rules to the JSX components. */
+/* SECTION GLOBALS-01 | Browser defaults */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input {
+  font: inherit;
+}
+button,
+a,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid #a5bb7a;
+  outline-offset: 3px;
+}
+button {
+  cursor: pointer;
+}
+a {
+  color: #557345;
+}
+button:disabled {
+  cursor: default;
+}
+/* SECTION GLOBALS-02 | Main layout */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f7f8f4;
+}
+
+.workspace-label {
+  font-size: 10px;
+  letter-spacing: 1.7px;
+  color: #68765f;
+  font-weight: 700;
+  margin: 48px 12px 16px;
+}
+.nav-item {
+  border: 0;
+  background: transparent;
+  color: #68765f;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  border-radius: 9px;
+  font-size: 13px;
+  margin-bottom: 7px;
+  text-align: left;
+  transition: background 0.15s;
+}
+.nav-item.active {
+  background: #e1e8d8;
+  color: #425d35;
+  font-weight: 700;
+}
+.nav-item:hover,
+.collections button:hover {
+  background: #e5eadd;
+}
+.nav-count {
+  margin-left: auto;
+  background: #f4f6f0;
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 11px;
+}
+
+.categories-label {
+  margin-top: 34px;
+}
+.collections button {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: none;
+  border: 0;
+  padding: 11px 12px;
+  color: #6f7b6c;
+  border-radius: 8px;
+  font-size: 13px;
+  text-align: left;
+}
+.collections button.selected {
+  background: #e8ecdf;
+  color: #344e3c;
+}
+.collections button > span:last-child {
+  margin-left: auto;
+  font-size: 11px;
+  color: #68765f;
+}
+.collection-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+}
+.collection-dot.work {
+  background: #9daa83;
+}
+.collection-dot.personal {
+  background: #c2adce;
+}
+.collection-dot.urgent {
+  background: #d6a092;
+}
+.collection-dot.all {
+  background: #809486;
+}
+
+.topbar-note > span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8aa475;
+  margin-right: 7px;
+}
+
+.topbar {
+  height: 74px;
+  border-bottom: 1px solid #e7e9e1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 44px;
+  font-size: 11px;
+  background: #fafbf8;
+}
+.breadcrumb {
+  color: #68765f;
+}
+.breadcrumb-slash {
+  margin: 0 15px;
+  color: #b1b8ac;
+}
+.topbar strong {
+  font-weight: 500;
+}
+.topbar-note {
+  color: #68765f;
+  font-size: 10px;
+}
+main {
+  max-width: 1460px;
+  margin: 0 auto;
+  padding: 43px 44px 20px;
+}
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 31px;
+}
+
+h1 {
+  font-size: clamp(26px, 2.7vw, 39px);
+  line-height: 1.2;
+  font-weight: 550;
+  letter-spacing: -1.6px;
+  margin: 0;
+}
+h1 > span {
+  color: #93aa74;
+}
+.page-subtitle {
+  font-size: 12px;
+  color: #68765f;
+  margin: 12px 0 0;
+}
+/* The overview uses four columns on desktop and two on smaller screens. */
+/* SECTION GLOBALS-03 | Summary cards */
+.overview {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.stat {
+  background: #fff;
+  border: 1px solid #e5e9df;
+  border-radius: 13px;
+  text-align: left;
+  padding: 17px 18px 15px;
+  color: #344136;
+  transition:
+    transform 0.18s,
+    box-shadow 0.18s;
+}
+.stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 20px #344e3c0c;
+}
+.stat-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #68765f;
+}
+.stat-icon {
+  height: 26px;
+  width: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #f1f3ed;
+  font-size: 16px;
+  color: #82916d;
+}
+.stat strong {
+  display: block;
+  font-size: 33px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -1px;
+  margin: 6px 0;
+}
+.stat-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #68765f;
+}
+.complete {
+  background: #f0f4e9;
+  border-color: #dfe7d4;
+}
+.complete .stat-icon {
+  background: #e2ebd7;
+  color: #74925a;
+}
+.pending .stat-icon {
+  background: #f7f0df;
+  color: #b69d61;
+}
+.late .stat-icon {
+  background: #f7eae4;
+  color: #bf9481;
+}
+/* SECTION GLOBALS-04 | Progress banner */
+.focus-banner {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 17px 24px;
+  border-radius: 12px;
+  background: #edf1e6;
+  border: 1px solid #e3e9d9;
+  margin-bottom: 32px;
+}
+.focus-symbol {
+  font-size: 42px;
+  color: #9cad80;
+  line-height: 1;
+}
+.focus-banner strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.focus-banner p {
+  font-size: 10px;
+  color: #68765f;
+  margin: 5px 0 0;
+}
+.progress-block {
+  margin-left: auto;
+  width: 160px;
+}
+.progress-block span {
+  display: block;
+  text-align: right;
+  font-size: 9px;
+  color: #68765f;
+  margin-bottom: 9px;
+}
+.progress-block .MuiLinearProgress-root {
+  height: 5px;
+  border-radius: 4px;
+  background: #dde5d0;
+}
+.progress-block .MuiLinearProgress-bar {
+  background: #91a770;
+}
+/* SECTION GLOBALS-05 | Task workspace */
+.task-panel {
+  background: #fff;
+  border: 1px solid #e6e9e1;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.panel-heading {
+  padding: 24px 25px 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+.panel-heading h2 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.4px;
+}
+.panel-heading h2 span {
+  font-size: 10px;
+  vertical-align: middle;
+  display: inline-block;
+  background: #f0f3e9;
+  border: 1px solid #e5e9db;
+  border-radius: 5px;
+  padding: 3px 7px;
+  margin-left: 7px;
+  color: #8c9a7a;
+  letter-spacing: 0;
+}
+.panel-heading p {
+  margin: 8px 0 0;
+  color: #68765f;
+  font-size: 10px;
+}
+.data-actions {
+  display: flex;
+  gap: 3px;
+}
+.data-actions .MuiButton-root {
+  font-size: 10px;
+  color: #7d8874;
+}
+.data-actions .MuiSvgIcon-root {
+  font-size: 17px;
+}
+.view-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+  border-bottom: 1px solid #ecede7;
+  gap: 10px;
+}
+.status-tabs {
+  display: flex;
+  gap: 22px;
+}
+.status-tabs button {
+  position: relative;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  padding: 14px 0;
+  color: #68765f;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.status-tabs button.active {
+  border-bottom-color: #6f8751;
+  color: #536e3e;
+  font-weight: 600;
+}
+.status-tabs span {
+  font-size: 9px;
+  margin-left: 7px;
+  color: #68765f;
+}
+.view-toggle {
+  background: #f7f8f4;
+  padding: 3px;
+  border: 1px solid #e9ece2;
+  display: flex;
+  border-radius: 7px;
+  gap: 4px;
+}
+.view-toggle button {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  border: 0;
+  background: none;
+  border-radius: 5px;
+  font-size: 10px;
+  color: #68765f;
+  padding: 5px 9px;
+}
+.view-toggle button.active {
+  background: #fff;
+  box-shadow: 0 1px 3px #00000012;
+  color: #657c4d;
+}
+.view-toggle .MuiSvgIcon-root {
+  font-size: 15px;
+}
+.filters {
+  padding: 22px 25px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.filters .MuiInputBase-root {
+  font-size: 11px;
+}
+.filters .MuiInputLabel-root {
+  font-size: 12px;
+}
+.search-field {
+  flex: 1;
+  min-width: 150px;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  border: 1px solid #e5e9dd;
+  border-radius: 9px;
+  padding: 9px 11px;
+  background: #fcfdfb;
+}
+.search-field .MuiSvgIcon-root {
+  font-size: 18px;
+  color: #68765f;
+}
+.search-field input {
+  width: 100%;
+  background: none;
+  border: 0;
+  outline: 0;
+  color: #526348;
+  font-size: 11px;
+  padding: 2px;
+}
+.search-field input::placeholder {
+  color: #68765f;
+}
+/* One task row: checkbox, description, category/date and action buttons. */
+/* SECTION GLOBALS-06 | Task rows */
+.task-row {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  padding: 18px 23px;
+  border-top: 1px solid #eff0ea;
+  transition: background 0.15s;
+}
+.task-row:hover {
+  background: #fcfdf9;
+}
+.task-row > .MuiCheckbox-root {
+  padding: 2px 4px;
+  margin-top: 1px;
+  color: #c5ceba;
+}
+.task-copy {
+  flex: 1;
+  min-width: 0;
+}
+.task-copy h3 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 3px 0 6px;
+  overflow-wrap: anywhere;
+}
+.task-copy p {
+  font-size: 10px;
+  margin: 0 0 10px;
+  color: #68765f;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.task-meta > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: #68765f;
+}
+.task-meta > span.overdue {
+  color: #b47f6b;
+}
+.task-meta > span.done-label {
+  color: #7b9363;
+}
+.category-chip.MuiChip-root {
+  height: 21px;
+  font-size: 9px;
+  border-radius: 5px;
+  background: #edf1e7;
+  color: #5b7146;
+}
+.category-chip.personal.MuiChip-root {
+  background: #f0eaf5;
+  color: #7a608d;
+}
+.category-chip.urgent.MuiChip-root {
+  background: #f9ede7;
+  color: #94654f;
+}
+.category-chip .MuiChip-label {
+  padding: 0 8px;
+}
+.row-actions {
+  display: flex;
+  gap: 3px;
+  margin-top: 2px;
+}
+.row-actions .MuiIconButton-root {
+  color: #74816a;
+  padding: 7px;
+}
+.row-actions .MuiSvgIcon-root {
+  font-size: 16px;
+}
+.is-done h3 {
+  text-decoration: line-through;
+  color: #68765f;
+}
+.is-done .task-copy p {
+  color: #68765f;
+}
+/* SECTION GLOBALS-07 | Pagination */
+.pagination {
+  padding: 19px 24px;
+  border-top: 1px solid #e9ece2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.pagination-size,
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 10px;
+  color: #68765f;
+}
+.pagination .MuiInputBase-root,
+.pagination .MuiInputLabel-root {
+  font-size: 11px;
+}
+.pagination-controls {
+  gap: 5px;
+}
+.pagination-controls > .MuiButton-root {
+  font-size: 10px;
+  min-width: auto;
+  padding: 7px;
+}
+.pagination-controls .MuiPaginationItem-root {
+  font-size: 10px;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 7px;
+}
+.pagination-controls > span {
+  margin-right: 7px;
+}
+.page-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #68765f;
+  padding: 22px 3px;
+}
+.page-footer > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* SECTION GLOBALS-08 | Empty states */
+.empty {
+  text-align: center;
+  padding: 45px 20px 55px;
+  color: #929e85;
+  border-top: 1px solid #eff0ea;
+}
+.empty-flower {
+  font-size: 40px;
+  color: #b1be9c;
+}
+.empty h3 {
+  font-weight: 500;
+  font-size: 17px;
+  color: #6e825d;
+  margin: 10px;
+}
+.empty p {
+  font-size: 12px;
+}
+.muted {
+  color: #83917c;
+  font-size: 13px;
+  line-height: 1.7;
+}
+/* SECTION GLOBALS-09 | Task forms */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-top: 14px;
+}
+.form-pair {
+  display: flex;
+  gap: 16px;
+}
+.loading {
+  padding: 32px;
+  color: #83917c;
+  font-size: 12px;
+}
+/* SECTION GLOBALS-10 | Import preview */
+.import-drop {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px;
+  border: 1px dashed #bac9aa;
+  border-radius: 13px;
+  background: #f8faf4;
+}
+.import-drop strong {
+  font-size: 15px;
+  font-weight: 500;
+}
+.import-drop p {
+  font-size: 12px;
+  color: #68765f;
+  margin: 0;
+}
+.import-help {
+  font-size: 12px;
+  color: #68765f;
+  line-height: 1.8;
+}
+.preview-scroll {
+  overflow: auto;
+  max-height: 300px;
+}
+.preview-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+  text-align: left;
+}
+.preview-table td,
+.preview-table th {
+  padding: 10px;
+  border-bottom: 1px solid #e5e9dd;
+  max-width: 300px;
+  overflow-wrap: anywhere;
+}
+.preview-table th {
+  background: #f1f4eb;
+  position: sticky;
+  top: 0;
+}
+details {
+  margin: 15px 0;
+  font-size: 12px;
+}
+/* SECTION GLOBALS-11 | Calendar */
+.calendar {
+  padding: 0 24px 16px;
+}
+.calendar-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.calendar-heading h3 {
+  font-size: 16px;
+  font-weight: 500;
+}
+/* Seven equal columns place tasks under the correct weekday. */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border-left: 1px solid #e8ecdf;
+  border-top: 1px solid #e8ecdf;
+}
+.weekday {
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 10px;
+  color: #68765f;
+  background: #f6f8f1;
+  border-right: 1px solid #e8ecdf;
+  border-bottom: 1px solid #e8ecdf;
+}
+.calendar-day {
+  min-height: 110px;
+  padding: 7px;
+  border-right: 1px solid #e8ecdf;
+  border-bottom: 1px solid #e8ecdf;
+  min-width: 0;
+}
+.calendar-day.outside {
+  background: #fafbf8;
+}
+.day-number {
+  font-size: 11px;
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-bottom: 5px;
+  color: #68765f;
+}
+.today .day-number {
+  border-radius: 50%;
+  background: #607d46;
+  color: #fff;
+}
+.calendar-task {
+  display: block;
+  width: 100%;
+  border: 0;
+  text-align: left;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 9px;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: #edf1e7;
+  color: #73875f;
+}
+.calendar-task.personal {
+  background: #f0eaf5;
+  color: #9680a8;
+}
+.calendar-task.urgent {
+  background: #f9ede7;
+  color: #b7836e;
+}
+.calendar-done {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+.calendar-footnote {
+  font-size: 10px;
+  color: #68765f;
+  margin: 14px 0 0;
+}
+/* SECTION GLOBALS-12 | Large desktop layout */
+@media (min-width: 1500px) {
+  main {
+    padding-top: 52px;
+  }
+  .task-row {
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+}
+
+/* SECTION GLOBALS-13 | Small desktop layout */
+@media (max-width: 1150px) {
+  main {
+    padding: 30px 25px;
+  }
+  .topbar {
+    padding: 0 25px;
+  }
+  .stat {
+    padding: 15px 13px;
+  }
+  .stat-hint {
+    font-size: 8px;
+  }
+  .filters {
+    flex-wrap: wrap;
+  }
+  .search-field {
+    flex-basis: 100%;
+  }
+  .pagination {
+    flex-wrap: wrap;
+  }
+  .overview {
+    gap: 10px;
+  }
+  .status-tabs {
+    gap: 15px;
+  }
+}
+/* These rules adjust spacing and controls for narrow phone screens. */
+/* SECTION GLOBALS-14 | Phone layout */
+@media (max-width: 760px) {
+  .app-shell {
+    display: block;
+  }
+
+  .nav-item {
+    width: auto;
+    margin: 0;
+    padding: 8px;
+    font-size: 11px;
+    gap: 5px;
+  }
+  .nav-item .MuiSvgIcon-root {
+    font-size: 18px;
+  }
+  .collections {
+    display: flex;
+    width: 100%;
+    gap: 3px;
+    border-top: 1px solid #e3e7dc;
+    padding-top: 7px;
+  }
+  .collections button {
+    padding: 8px 7px;
+    font-size: 10px;
+    gap: 6px;
+  }
+  .collections button > span:last-child {
+    font-size: 9px;
+  }
+
+  .topbar {
+    height: 46px;
+    padding: 0 20px;
+  }
+  .topbar-note {
+    display: none;
+  }
+  main {
+    padding: 26px 16px 12px;
+  }
+  .page-heading {
+    align-items: flex-start;
+    margin-bottom: 23px;
+    gap: 12px;
+  }
+  h1 {
+    font-size: 28px;
+    letter-spacing: -1px;
+    max-width: 260px;
+  }
+  .page-subtitle {
+    font-size: 11px;
+    line-height: 1.7;
+    max-width: 235px;
+  }
+  .page-heading > .MuiButton-root {
+    padding: 8px 11px;
+    font-size: 11px;
+    white-space: nowrap;
+    margin-top: 25px;
+  }
+
+  .overview {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .stat {
+    padding: 13px 15px;
+  }
+  .stat strong {
+    font-size: 29px;
+    margin: 0;
+  }
+  .stat-hint {
+    font-size: 9px;
+  }
+  .focus-banner {
+    padding: 15px;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .focus-symbol {
+    font-size: 32px;
+  }
+  .focus-banner strong {
+    font-size: 12px;
+  }
+  .focus-banner p {
+    font-size: 9px;
+    line-height: 1.6;
+  }
+  .progress-block {
+    width: 70px;
+    flex-shrink: 0;
+  }
+  .progress-block span {
+    font-size: 8px;
+  }
+  .panel-heading {
+    padding: 20px 15px 14px;
+  }
+  .panel-heading h2 {
+    font-size: 16px;
+  }
+  .panel-heading p {
+    font-size: 9px;
+    line-height: 1.5;
+  }
+  .data-actions {
+    gap: 0;
+  }
+  .data-actions .MuiButton-root {
+    padding: 6px;
+    min-width: auto;
+    font-size: 9px;
+  }
+  .data-actions .MuiButton-startIcon {
+    margin-right: 4px;
+  }
+  .view-line {
+    padding: 0 13px;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .status-tabs {
+    gap: 17px;
+  }
+  .status-tabs button {
+    font-size: 10px;
+  }
+  .view-toggle {
+    margin-bottom: 8px;
+  }
+  .filters {
+    padding: 18px 14px;
+    gap: 10px;
+  }
+  .filters > .MuiTextField-root {
+    flex: 1;
+    min-width: 120px;
+  }
+  .task-row {
+    padding: 17px 11px;
+    gap: 5px;
+  }
+  .task-copy h3 {
+    font-size: 12px;
+  }
+  .task-copy p {
+    font-size: 10px;
+  }
+  .row-actions {
+    flex-direction: column;
+    gap: 0;
+  }
+  .row-actions .MuiIconButton-root {
+    padding: 5px;
+  }
+  .task-meta {
+    gap: 8px;
+  }
+  .pagination {
+    padding: 17px 12px;
+  }
+  .pagination-controls {
+    flex-wrap: wrap;
+    font-size: 9px;
+  }
+  .page-footer {
+    font-size: 8px;
+    gap: 10px;
+    line-height: 1.6;
+  }
+  .page-footer > span:last-child {
+    text-align: right;
+  }
+  .calendar {
+    padding: 0 12px 12px;
+  }
+  .calendar-scroll {
+    overflow: auto;
+  }
+  .calendar-grid {
+    min-width: 580px;
+  }
+  .calendar-day {
+    min-height: 90px;
+  }
+  .form-pair {
+    flex-direction: column;
+    gap: 22px;
+  }
+}
+/* SECTION GLOBALS-15 | Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Navigation now lives in the top-right menu at every screen size. */
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+/* SECTION GLOBALS-16 | Navigation menu */
+.navigation-menu {
+  width: min(320px, 90vw);
+  padding: 22px;
+  background: #f4f6ef;
+  min-height: 100%;
+}
+.navigation-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.navigation-heading h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+.navigation-menu .workspace-label {
+  display: block;
+  margin: 30px 12px 14px;
+}
+.navigation-menu .collections {
+  display: block;
+  width: auto;
+  border: 0;
+  padding: 0;
+}
+.navigation-menu .collections button {
+  padding: 12px;
+  font-size: 13px;
+  gap: 12px;
+}
+.navigation-menu .collections button > span:last-child {
+  font-size: 11px;
+}
+.navigation-menu .nav-item {
+  width: 100%;
+  margin-bottom: 7px;
+  padding: 12px;
+  font-size: 13px;
+  gap: 12px;
+}
+.navigation-menu .nav-count {
+  display: block;
+}
+.navigation-menu .collection-dot {
+  flex-shrink: 0;
+}
+.day-number {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.day-number:hover {
+  background: #e2e9d9;
+  color: #425d35;
+}
+.calendar-day:not(.outside) {
+  cursor: pointer;
+}
+.calendar-day:not(.outside):hover {
+  background: #f8faf4;
+}
+.day-card-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #718465;
+  margin-bottom: 8px;
+}
+/* SECTION GLOBALS-17 | Daily plan cards */
+.day-plans {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0;
+}
+.day-plan {
+  text-align: left;
+  border: 1px solid #dfe7d5;
+  border-radius: 12px;
+  background: #f8faf5;
+  padding: 17px;
+  width: 100%;
+  color: #344136;
+}
+.day-plan:hover {
+  background: #edf2e6;
+  border-color: #9caf87;
+}
+.day-plan-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.day-plan-heading strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.day-plan p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #68765f;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.day-plan > span {
+  font-size: 11px;
+  color: #557345;
+}
+.day-plan-done strong {
+  text-decoration: line-through;
+}
+.day-card-help {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #68765f;
+}
+
+.main-shell {
+  margin-left: 0;
+  width: 100%;
+}
