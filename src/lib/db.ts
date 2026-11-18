@@ -17,6 +17,17 @@ export class TaskDatabase extends Dexie {
     // Version 1 is our first database layout. "id" is the unique record key.
     // The other names create indexes, which can help look up records later.
     this.version(1).stores({ tasks: "id, category, dueDate, order" });
+    // Keep old tasks when upgrading. Give them an empty start date instead of deleting them.
+    this.version(2)
+      .stores({ tasks: "id, category, startDate, dueDate, order" })
+      .upgrade(async (transaction) => {
+        await transaction
+          .table<Task, string>("tasks")
+          .toCollection()
+          .modify((task) => {
+            if (task.startDate === undefined) task.startDate = "";
+          });
+      });
   }
 }
 // Share one connection object instead of creating a database in every component.

@@ -19,6 +19,12 @@ it("submits an accessible task form with actual user input", async () => {
   fireEvent.change(screen.getByLabelText(/Description/), {
     target: { value: "Review test results" },
   });
+  fireEvent.change(screen.getByLabelText(/Start date/), {
+    target: { value: "2026-11-16" },
+  });
+  fireEvent.change(screen.getByLabelText(/Due date/), {
+    target: { value: "2026-11-18" },
+  });
   fireEvent.click(screen.getByRole("button", { name: "Create task" }));
   await waitFor(() =>
     expect(save).toHaveBeenCalledWith(
@@ -27,7 +33,8 @@ it("submits an accessible task form with actual user input", async () => {
         description: "Review test results",
         category: "Work",
         completed: false,
-        dueDate: "",
+        startDate: "2026-11-16",
+        dueDate: "2026-11-18",
       },
       undefined,
     ),
@@ -39,6 +46,7 @@ it("keeps edits open and displays storage errors when saving fails", async () =>
     title: "Original",
     description: "Details",
     category: "Work",
+    startDate: "",
     dueDate: "",
     completed: false,
   });

@@ -18,6 +18,7 @@ export interface TaskInput {
   title: string;
   description: string;
   category: Category;
+  startDate: string; // Leave blank when no start date is needed.
   dueDate: string; // "YYYY-MM-DD", or an empty string when no date is chosen.
   completed: boolean; // true means finished; false means still pending.
 }

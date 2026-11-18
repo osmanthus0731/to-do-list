@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { displayDate } from "@/lib/validation";
 import { Task } from "@/types/task";
 
 // SECTION DAYDIALOG-02 | Daily plan card and inputs
@@ -76,6 +77,12 @@ export default function DayDialog({
                 />
               </div>
               <p>{task.description}</p>
+              <p>
+                {task.startDate
+                  ? `Starts ${displayDate(task.startDate)} ? `
+                  : ""}
+                Due {displayDate(task.dueDate)}
+              </p>
               <span>{task.completed ? "Completed" : "Pending"}</span>
             </button>
           ))}

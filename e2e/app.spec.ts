@@ -425,3 +425,30 @@ test("calendar places a task on its due date, navigates months and opens editing
     animations: "disabled",
   });
 });
+
+test("start and due dates persist and can be edited", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New task", exact: true }).click();
+  const form = page.getByRole("dialog");
+  await form.getByLabel("Title", { exact: false }).fill("Scheduled task");
+  await form
+    .getByLabel("Description", { exact: false })
+    .fill("Check both saved dates");
+  await form.getByLabel("Start date", { exact: true }).fill("2026-11-16");
+  await form.getByLabel("Due date", { exact: true }).fill("2026-11-20");
+  await form.getByRole("button", { name: "Create task", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.reload();
+  await page
+    .getByRole("button", { name: "Edit Scheduled task", exact: true })
+    .click();
+  await expect(form.getByLabel("Start date", { exact: true })).toHaveValue(
+    "2026-11-16",
+  );
+  await expect(form.getByLabel("Due date", { exact: true })).toHaveValue(
+    "2026-11-20",
+  );
+  await form.getByLabel("Start date", { exact: true }).fill("2026-11-17");
+  await form.getByRole("button", { name: "Save changes", exact: true }).click();
+  await expect(page.locator(".task-row")).toContainText("Starts 17 Nov 2026");
+});

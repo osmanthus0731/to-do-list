@@ -43,6 +43,20 @@ export function validateTask(input: TaskInput): string[] {
     (input.dueDate && !validDate(input.dueDate))
   )
     errors.push("Due date must be a real date in YYYY-MM-DD format, or blank.");
+  if (
+    typeof input.startDate !== "string" ||
+    (input.startDate && !validDate(input.startDate))
+  )
+    errors.push(
+      "Start date must be a real date in YYYY-MM-DD format, or blank.",
+    );
+  // Dates in YYYY-MM-DD order can be compared directly, like words in a dictionary.
+  if (
+    validDate(input.startDate) &&
+    validDate(input.dueDate) &&
+    input.startDate > input.dueDate
+  )
+    errors.push("Start date cannot be after due date.");
   if (typeof input.completed !== "boolean")
     errors.push("Completion status is invalid.");
   return errors;
@@ -88,6 +102,7 @@ export function fingerprint(t: TaskInput): string {
     t.title.trim().toLowerCase(),
     t.description.trim().toLowerCase(),
     t.category,
+    t.startDate,
     t.dueDate,
   ]);
 }

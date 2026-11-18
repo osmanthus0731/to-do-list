@@ -4,11 +4,8 @@ A personal task planner built with Next.js App Router, TypeScript and Material U
 
 Quick links: [Run the app](#run-locally) · [Main code files](#where-the-main-code-lives) · [Frontend and design](#where-the-frontend-and-design-are) · [Button functions](#where-each-button-function-is) · [Other files](#remaining-files-explained).
 
-## Where the main code lives
 
-### Jump between code sections
-
-The main code files now start with a **NAVIGATION MAP**. The map lists numbered sections, and a matching comment appears beside each section of code.
+NAVIGATION MAP. The map lists numbered sections, and a matching comment appears beside each section of code.
 
 1. Open the file you want to read.
 2. Read its navigation map at the top.
@@ -84,17 +81,6 @@ npm start -- --port 3001
 
 The generated production build is in `.next/`. It is not the editable source code. Submit the source project and lockfile; the reviewer can install and rebuild it. Keep the same browser profile, hostname and port to access the same saved tasks. `localhost` and `127.0.0.1` use different storage origins.
 
-## Deploy to Vercel
-
-1. Push this project to GitHub, then open Vercel and choose **Add New > Project**.
-2. Import the GitHub repository. Allow the Vercel GitHub integration to access it if the repository is private.
-3. Use **Next.js** as the framework preset and the repository root (`./`) as the root directory.
-4. Use **Node.js 24.x**, **npm ci** as the install command and **npm run build** as the build command. Keep the default Next.js output settings; do not select the public folder as the build output.
-5. No environment variables, API keys or external database are required. Select **Deploy**, then open the generated URL.
-
-Vercel runs the build; you do not upload `.next/` or `node_modules/`. The source files and package lockfile are enough. See [Vercel Git deployment](https://vercel.com/docs/git) and [supported Node.js versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
-
-Tasks remain inside each visitor's browser. Tasks saved on localhost will not automatically appear at the new Vercel address because it has a different storage origin. Export and import a workbook to move them if needed. Deployments on a different preview hostname also have separate local storage. Nothing in this app sends your task database to GitHub or Vercel.
 
 ## Features
 
@@ -109,43 +95,7 @@ Tasks remain inside each visitor's browser. Tasks saved on localhost will not au
 
 Open navigation from the top-right three-line button. Double-click a calendar day, tap its date number or activate that button with the keyboard to see its plans. **Add plan** prefills the date. Saving or cancelling returns to the day card. The card includes all plans for that date even when the calendar grid is filtered.
 
-## Import and export
 
-Start with `public/sample-tasks.csv`, also available from the Import dialog.
-
-Required columns: `title`, `description`, `category`. Optional: `dueDate`, `status` or `completed`. Dates use YYYY-MM-DD, actual Excel date cells or a blank value. Categories ignore case. Status accepts Pending/Incomplete/Completed, true/false or 0/1; omitted means pending. Headers ignore case, spaces, underscores and hyphens.
-
-Limits are 10 MB and 5,000 rows per file. XLSX reads the first worksheet only. Preview shows the first 100 rows and lists all invalid-row errors separately. Only valid, unique rows are saved after confirmation. Formula/error cells and legacy XLS files are unsupported.
-
-Duplicates have the same trimmed, case-insensitive title and description, category and due date. Status is excluded. Import never overwrites existing tasks; checks repeat inside the transaction to handle another tab importing at the same time. A failed batch rolls back.
-
-Excel export includes task content, category, due date, status, ID and timestamps, with a styled frozen header, filters and readable column widths. Text is written as text rather than spreadsheet formulas. An exported workbook can be reimported; existing duplicates are skipped.
-
-## Checks and recorded results
-
-```sh
-npm run typecheck
-npm run lint
-npm test
-npm run build
-npm run test:e2e
-```
-
-Verified on 18 November 2026: TypeScript and ESLint passed; **26 unit/component tests** passed; the production build passed; **6 production browser tests** passed. Tests cover task operations, persistence, validation, combined queries, import/export, day-card creation, menu behavior and mobile layouts.
-
-Browser tests use installed Microsoft Edge and port 3001. Build first. To use Playwright Chromium, remove `channel: 'msedge'` from `playwright.config.ts` and run `npx playwright install chromium`. Tests use isolated browser contexts. For optional library coverage, run `npm test -- --coverage`.
-
-## Known limits and dependency audit
-
-Data belongs to the browser profile and origin. Clearing data or storage eviction can remove tasks, so export backups. There is no cloud sync, encryption, account system or offline service worker. Very large datasets and specially crafted compressed workbooks need further performance/security hardening. Full-form concurrent edits use the last successful write. Calendar is included; optional drag-and-drop is omitted.
-
-The 18 November 2026 full audit reports **17 high-severity package entries from the same unpatched picomatch advisory in development tools**. `npm audit --omit=dev` reports **zero production dependency vulnerabilities**. Task text is not supplied to that file-pattern matcher by this app. GitHub lists no patched version; this is a disclosed development dependency limitation. Do not describe the full audit as clean or apply a forced downgrade without checking compatibility. See the [upstream advisory](https://github.com/advisories/GHSA-fc5q-39xc-vjpf).
-
-## Submission and demo
-
-Submit `src/`, `public/`, `e2e/`, package files, configuration files and this README. Exclude `node_modules/`, `.next/`, coverage, test output and local delivery archives. No Word/PDF instruction documents or rendering scripts are required.
-
-Demo: import the sample → create/edit/complete a task → refresh → combine filters and pages → add a plan through a calendar day card → export/reimport → confirm deletion. Follow any separate employer instructions for uploading, naming and deadlines. The supplied PDF does not require hosting.
 
 ## Where the frontend and design are
 
@@ -153,16 +103,15 @@ Demo: import the sample → create/edit/complete a task → refresh → combine 
 
 **Design** means how those screens look: layout, spacing, colors, fonts and mobile sizing.
 
-| Change you want to make                     | File and place to look                                                                                                         |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Overall layout, header and spacing          | `src/app/globals.css`: `.app-shell`, `.main-shell`, `.topbar`, `.page-heading`.                                                |
-| Summary cards and progress area             | `globals.css`: `.overview`, `.stat`, `.focus-banner`; markup in `Overview.tsx` and `Dashboard.tsx`.                            |
-| Task list appearance                        | `globals.css`: `.task-panel`, `.task-row`, `.task-copy`, `.task-meta`; markup in `TaskList.tsx`.                               |
-| Calendar and daily plans                    | `globals.css`: `.calendar-grid`, `.calendar-day`, `.calendar-task`, `.day-plan`; markup in `Calendar.tsx` and `DayDialog.tsx`. |
-| Right-hand menu                             | `globals.css`: `.navigation-menu`, `.nav-item`, `.collections`; markup in `NavigationMenu.tsx`.                                |
-| Main button color, font or rounded corners  | `src/components/Providers.tsx`: `createTheme()`, especially `palette`, `typography` and `components`.                          |
-| Phone layout                                | `globals.css`: `@media` rules change styles at smaller screen widths.                                                          |
-| A style specific to one Material UI control | Its `.tsx` file may use an `sx` property for that individual control.                                                          |
+  Change you want to make                     | File and place to look                                                                                                         
+| Overall layout, header and spacing          | `src/app/globals.css`: `.app-shell`, `.main-shell`, `.topbar`, `.page-heading`.                                                
+| Summary cards and progress area             | `globals.css`: `.overview`, `.stat`, `.focus-banner`; markup in `Overview.tsx` and `Dashboard.tsx`.                            
+| Task list appearance                        | `globals.css`: `.task-panel`, `.task-row`, `.task-copy`, `.task-meta`; markup in `TaskList.tsx`.                               
+| Calendar and daily plans                    | `globals.css`: `.calendar-grid`, `.calendar-day`, `.calendar-task`, `.day-plan`; markup in `Calendar.tsx` and `DayDialog.tsx`. 
+| Right-hand menu                             | `globals.css`: `.navigation-menu`, `.nav-item`, `.collections`; markup in `NavigationMenu.tsx`.                                
+| Main button color, font or rounded corners  | `src/components/Providers.tsx`: `createTheme()`, especially `palette`, `typography` and `components`.                          
+| Phone layout                                | `globals.css`: `@media` rules change styles at smaller screen widths.                                                          
+| A style specific to one Material UI control | Its `.tsx` file may use an `sx` property for that individual control.                                                          
 
 For example, change the primary button color in Providers. To change what **New task does**, look at its `onClick` in Dashboard. Appearance and behavior are related, but are not the same thing.
 
@@ -199,7 +148,6 @@ A button's **onClick** says what to do when clicked. An input's **onChange** rea
 | Select an existing calendar plan             | `Calendar.tsx` or `DayDialog.tsx` | `onEdit(task)` opens the same editing form.                                                                              |
 | Retry storage                                | `Dashboard.tsx`                   | Calls `retry()` from `useTasks.ts`, restarting the connection and task subscription.                                     |
 
-There is not a separate named function for every button. A simple action may be written directly inside `onClick`. Saving and other important operations call a named function and then the task service. Only the service writes task records; the buttons themselves do not contain database commands.
 
 ## Remaining files explained
 
@@ -234,3 +182,9 @@ The other source and project files are:
 | `.gitignore`                    | Lists files and folders to leave out of source control.                          |
 | `.next/`                        | Generated build output, not the application's editable source.                   |
 | `node_modules/`                 | Installed third-party libraries.                                                 |
+
+### Task start and due dates
+
+The Add/Edit task form has optional **Start date** and **Due date** fields. Start date means when you plan to begin; Due date means when it should be finished. Both dates appear in the task list. A start date cannot be after its due date. The calendar groups tasks by due date. Existing saved tasks are kept and receive a blank start date automatically.
+
+CSV and Excel imports accept an optional `startDate` column (YYYY-MM-DD or blank). Older files without it still work. Excel exports include both dates. Duplicate checks compare title, description, category, start date, and due date.

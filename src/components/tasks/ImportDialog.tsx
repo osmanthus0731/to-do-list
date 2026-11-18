@@ -108,7 +108,8 @@ export default function ImportDialog({
           </Button>
         </div>
         <p className="import-help">
-          Headers: <code>title, description, category, dueDate, status</code>.
+          Headers:{" "}
+          <code>title, description, category, startDate, dueDate, status</code>.
           Dates: YYYY-MM-DD or blank. Status: Pending or Completed. Categories:
           Work, Personal, Urgent. Existing tasks are never overwritten;
           duplicates are skipped regardless of status.
@@ -139,6 +140,7 @@ export default function ImportDialog({
                     <th>Row</th>
                     <th>Title</th>
                     <th>Category</th>
+                    <th>Start date</th>
                     <th>Due date</th>
                     <th>Validation</th>
                   </tr>
@@ -149,6 +151,7 @@ export default function ImportDialog({
                       <td>{r.row}</td>
                       <td>{r.task.title || "-"}</td>
                       <td>{r.task.category}</td>
+                      <td>{r.task.startDate || "-"}</td>
                       <td>{r.task.dueDate || "-"}</td>
                       <td>
                         {r.errors.join(" ") ||

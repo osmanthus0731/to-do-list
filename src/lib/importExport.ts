@@ -43,6 +43,11 @@ export function previewRows(
     const text = (key: string) => String(r[key] ?? "").trim();
     const rawStatus = text("completed") || text("status") || "false";
     const status = rawStatus.toLowerCase();
+    // Older files can omit Start Date; an absent column becomes an empty date.
+    const startDate =
+      r.startdate instanceof Date
+        ? r.startdate.toISOString().slice(0, 10)
+        : text("startdate");
     let dueDate = text("duedate");
     if (r.duedate instanceof Date)
       dueDate = r.duedate.toISOString().slice(0, 10);
@@ -52,6 +57,7 @@ export function previewRows(
       description: text("description"),
       category: (category.charAt(0).toUpperCase() +
         category.slice(1).toLowerCase()) as Category,
+      startDate,
       dueDate,
       completed: ["true", "completed", "1"].includes(status),
     };
@@ -153,6 +159,7 @@ export async function buildWorkbook(tasks: Task[]) {
     { header: "Title", key: "title", width: 32 },
     { header: "Description", key: "description", width: 58 },
     { header: "Category", key: "category", width: 15 },
+    { header: "Start Date", key: "startDate", width: 16 },
     { header: "Due Date", key: "dueDate", width: 16 },
     { header: "Status", key: "status", width: 16 },
     { header: "ID", key: "id", width: 40 },
@@ -163,12 +170,17 @@ export async function buildWorkbook(tasks: Task[]) {
     // Plain text stays text, even if a title starts with "=". Dates use real Excel cells.
     const row = sheet.addRow({
       ...task,
+      startDate:
+        task.startDate && validDate(task.startDate)
+          ? new Date(task.startDate + "T12:00:00Z")
+          : null,
       dueDate:
         task.dueDate && validDate(task.dueDate)
           ? new Date(task.dueDate + "T12:00:00Z")
           : null,
       status: task.completed ? "Completed" : "Pending",
     });
+    row.getCell("startDate").numFmt = "yyyy-mm-dd";
     row.getCell("dueDate").numFmt = "yyyy-mm-dd";
     row.alignment = { vertical: "top", wrapText: true };
     row.height = 44;
@@ -186,7 +198,7 @@ export async function buildWorkbook(tasks: Task[]) {
     cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
     cell.alignment = { vertical: "middle" };
   });
-  sheet.autoFilter = { from: "A1", to: `H${Math.max(1, sheet.rowCount)}` };
+  sheet.autoFilter = { from: "A1", to: `I${Math.max(1, sheet.rowCount)}` };
   sheet.properties.defaultRowHeight = 24;
   return workbook;
 }

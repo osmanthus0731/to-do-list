@@ -44,6 +44,7 @@ export default function TaskDialog({
       title: "",
       description: "",
       category: "Work",
+      startDate: "",
       dueDate: initialDueDate,
       completed: false,
     },
@@ -132,6 +133,19 @@ export default function TaskDialog({
                   </MenuItem>
                 ))}
               </TextField>
+            </div>
+            <div className="form-pair">
+              <TextField
+                label="Start date"
+                type="date"
+                value={input.startDate}
+                onChange={(e) => change("startDate", e.target.value)}
+                fullWidth
+                slotProps={{
+                  inputLabel: { shrink: true },
+                  htmlInput: { min: "1900-01-01", max: "9999-12-31" },
+                }}
+              />
               <TextField
                 label="Due date"
                 type="date"

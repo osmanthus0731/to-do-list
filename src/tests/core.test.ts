@@ -1,3 +1,4 @@
+import Dexie from "dexie";
 // These tests check results a user relies on: valid tasks, safe saving, correct query
 // results and reliable file handling.
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
@@ -22,6 +23,7 @@ const input: TaskInput = {
   title: "Write report",
   description: "Review customer feedback",
   category: "Work",
+  startDate: "",
   dueDate: "2026-11-18",
   completed: false,
 };
@@ -283,7 +285,7 @@ describe("import and Excel export", () => {
     ];
     const book = await buildWorkbook(tasks);
     expect(book.worksheets[0].getCell("A1").font.bold).toBe(true);
-    expect(book.worksheets[0].getCell("D2").numFmt).toBe("yyyy-mm-dd");
+    expect(book.worksheets[0].getCell("E2").numFmt).toBe("yyyy-mm-dd");
     expect(book.worksheets[0].getCell("A3").type).toBe(3);
     const bytes = await book.xlsx.writeBuffer();
     const preview = await readImport(
@@ -313,4 +315,57 @@ describe("import and Excel export", () => {
     expect(p[1].duplicate).toBe(true);
     expect(p[2].errors).toHaveLength(1);
   });
+});
+
+it("validates optional start dates and rejects reversed date ranges", () => {
+  expect(validateTask({ ...input, startDate: "2026-11-17" })).toEqual([]);
+  expect(validateTask({ ...input, startDate: input.dueDate })).toEqual([]);
+  expect(validateTask({ ...input, startDate: "2026-11-19" })).toContain(
+    "Start date cannot be after due date.",
+  );
+  expect(validateTask({ ...input, startDate: "2026-02-30" }).join()).toContain(
+    "Start date must be a real date",
+  );
+});
+
+it("keeps old tasks when upgrading a database without start dates", async () => {
+  const name = "migration-" + crypto.randomUUID();
+  const legacy = new Dexie(name);
+  legacy.version(1).stores({ tasks: "id, category, dueDate, order" });
+  const oldTask = createTask(input);
+  const { startDate, ...record } = oldTask;
+  expect(startDate).toBe("");
+  await legacy.table("tasks").add(record);
+  legacy.close();
+  const upgraded = new TaskDatabase(name);
+  try {
+    expect(await upgraded.tasks.get(oldTask.id)).toEqual({
+      ...oldTask,
+      startDate: "",
+    });
+  } finally {
+    await upgraded.delete();
+  }
+});
+
+it("imports and exports start dates without losing either date", async () => {
+  const task = createTask({ ...input, startDate: "2026-11-16" });
+  const csv = previewRows(
+    parseCSV(
+      "title,description,category,startDate,dueDate\nPlan,Details,Work,2026-11-16,2026-11-18",
+    ),
+    [],
+  );
+  expect(csv[0].task.startDate).toBe(task.startDate);
+  expect(csv[0].errors).toEqual([]);
+  const workbook = await buildWorkbook([task]);
+  const bytes = await workbook.xlsx.writeBuffer();
+  const file = {
+    name: "dates.xlsx",
+    size: bytes.byteLength,
+    arrayBuffer: async () => bytes,
+  } as File;
+  const rows = await readImport(file, []);
+  expect(rows[0].task.startDate).toBe(task.startDate);
+  expect(rows[0].task.dueDate).toBe(task.dueDate);
 });

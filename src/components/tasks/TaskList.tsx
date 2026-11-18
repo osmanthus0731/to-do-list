@@ -63,6 +63,12 @@ export default function TaskList({
                 label={t.category}
                 size="small"
               />
+              {t.startDate && (
+                <span>
+                  <EventOutlinedIcon fontSize="inherit" />
+                  Starts {displayDate(t.startDate)}
+                </span>
+              )}
               <span
                 className={
                   !t.completed && t.dueDate && t.dueDate < todayISO()
@@ -71,7 +77,7 @@ export default function TaskList({
                 }
               >
                 <EventOutlinedIcon fontSize="inherit" />
-                {displayDate(t.dueDate)}
+                {t.dueDate ? `Due ${displayDate(t.dueDate)}` : "No due date"}
                 {!t.completed && t.dueDate && t.dueDate < todayISO()
                   ? " - Overdue"
                   : ""}
